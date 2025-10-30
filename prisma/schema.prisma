@@ -1,6 +1,11 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
-  output   = "../lib/generated/prisma"
 }
 
 datasource db {
@@ -15,14 +20,16 @@ enum UserRole {
 }
 
 model User {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  name  String?
-  email String  @unique
-  image String?
+  id       String    @id @default(cuid()) @map("_id")
+  name     String?
+  email    String    @unique
+  image    String?
   accounts Account[]
-  role UserRole @default(USER)
+  role     UserRole  @default(USER)
 
- chatMessages ChatMessage[] // New relation for chat messages
+  myPlayground StarMark[]
+
+  chatMessages ChatMessage[] // New relation for chat messages
 
   staredPlayground Playground[]
   createdAt        DateTime     @default(now())
@@ -30,23 +37,23 @@ model User {
 }
 
 model Account {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
+  id                String  @id @default(cuid()) @map("_id")
+  userId            String  @map("user_id")
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
-  expires_at        Int?
-  token_type        String?
+  refreshToken      String? @map("refresh_token")
+  accessToken       String? @map("access_token")
+  expiresAt         Int?    @map("expires_at")
+  tokenType         String? @map("token_type")
   scope             String?
-  id_token          String? @db.String
-  session_state     String?
+  idToken           String? @map("id_token")
+  sessionState      String? @map("session_state")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-  @@map("accounts")
+  @@index([userId])
 }
 
 enum Templates {
@@ -59,7 +66,7 @@ enum Templates {
 }
 
 model Playground {
-  id            String         @id @default(auto()) @map("_id")
+  id            String         @id @default(cuid()) @map("_id")
   title         String
   description   String?
   template      Templates      @default(REACT)
@@ -72,7 +79,7 @@ model Playground {
 }
 
 model StarMark {
-  id           String     @id @default(auto()) @map("_id")
+  id           String     @id @default(cuid()) @map("_id")
   userId       String
   playgroundId String
   isMarked     Boolean
@@ -84,7 +91,7 @@ model StarMark {
 }
 
 model TemplateFile {
-  id           String     @id @default(auto()) @map("_id")
+  id           String     @id @default(cuid()) @map("_id")
   content      Json
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
@@ -94,7 +101,7 @@ model TemplateFile {
 
 // New model for AI chat messages
 model ChatMessage {
-  id        String   @id @default(auto()) @map("_id")
+  id        String   @id @default(cuid()) @map("_id")
   userId    String
   role      String // "user" or "assistant"
   content   String
