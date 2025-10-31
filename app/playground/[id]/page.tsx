@@ -40,7 +40,7 @@ import {
 import WebContainerPreview from "@/features/webcontainers/components/webcontainer-preview";
 import LoadingStep from "@/features/playground/components/loader";
 import { PlaygroundEditor } from "@/features/playground/components/playground-editor";
-// import ToggleAI from "@/features/playground/components/toggle-ai";
+import ToggleAI from "@/features/playground/components/toggle-ai";
 import { useFileExplorer } from "@/features/playground/hooks/useFileExplorer";
 import { usePlayground } from "@/features/playground/hooks/usePlayground";
 import { useAISuggestions } from "@/features/playground/hooks/useAISuggestion";
