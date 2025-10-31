@@ -24,7 +24,7 @@ export default async function DashboardLayout({
     playgroundData?.map((item) => ({
       id: item.id,
       name: item.title,
-      starred: item.Starmark?.[0]?.isMarked || false,
+      starred: item.starMarks?.[0]?.isMarked || false,
       // Pass the icon name as a string
       Starred:false,
       icon: technologyIconMap[item.template] || "Code2", // Default to "Code2" if template not found

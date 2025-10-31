@@ -1,8 +1,7 @@
-
 "use client";
-
+import TemplateSelectionModal from "@/features/dashboard/components/template-selecting-modals";
 import { Button } from "@/components/ui/button"
-// import { createPlayground } from "@/features/playground/actions";
+import { createPlayground } from "@/features/dashboard/actions";
 import { Plus } from 'lucide-react'
 import Image from "next/image"
 import { useRouter } from "next/navigation";
@@ -10,7 +9,28 @@ import { useState } from "react"
 import { toast } from "sonner";
 
 const AddNewButton = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedTemplate, setSelectedTemplate] = useState<{
+    title: string;
+    template: "REACT" | "NEXTJS" | "EXPRESS" | "VUE" | "HONO" | "ANGULAR";
+    description?: string;
+  } | null>(null)
+  const router = useRouter()
+
+  const handleSubmit = async(data: {
+    title: string;
+    template: "REACT" | "NEXTJS" | "EXPRESS" | "VUE" | "HONO" | "ANGULAR";
+    description?: string;
+  }) => {
+    setSelectedTemplate(data)
+    const res = await createPlayground(data);
+    toast("Playground created successfully");
+    // Here you would typically handle the creation of a new playground
+    // with the selected template data
+    console.log("Creating new playground:", data)
+    setIsModalOpen(false)
+    router.push(`/playground/${res?.id}`)
+  }
 
   return (
     <>
@@ -22,7 +42,7 @@ const AddNewButton = () => {
         shadow-[0_2px_10px_rgba(0,0,0,0.08)]
         hover:shadow-[0_10px_30px_rgba(233,63,63,0.15)]"
       >
-        <div className="flex flex-row justify-center items-start mt-4 gap-4">
+        <div className="flex flex-row justify-center items-start gap-4">
           <Button
             variant={"outline"}
             className="flex justify-center items-center bg-white group-hover:bg-[#fff8f8] group-hover:border-[#E93F3F] group-hover:text-[#E93F3F] transition-colors duration-300"
@@ -46,6 +66,12 @@ const AddNewButton = () => {
           />
         </div>
       </div>
+      
+      <TemplateSelectionModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSubmit={handleSubmit}
+      />
     </>
   )
 }

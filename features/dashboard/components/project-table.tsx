@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { format } from "date-fns";
-import type { Project } from "../types";
+import type { Project } from "../../auth/types";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -53,7 +53,8 @@ import {
   Eye,
 } from "lucide-react";
 import { toast } from "sonner";
-import { MarkedToggleButton } from "./toggle-star";
+import { MarkedToggleButton } from "./marked-toggle";
+// import { MarkedToggleButton } from "./toggle-star";
 
 interface ProjectTableProps {
   projects: Project[];
@@ -211,6 +212,11 @@ export default function ProjectTable({
                   </Badge>
                 </TableCell>
                 <TableCell>
+
+                  <span className="text-sm text-grey-500">
+                    {format(new Date(project.createdAt), "dd mm yyyy")} 
+                  </span>
+
                   {format(new Date(project.createdAt), "MMM d, yyyy")}
                 </TableCell>
                 <TableCell>
@@ -238,7 +244,7 @@ export default function ProjectTable({
                     <DropdownMenuContent align="end" className="w-48">
                       <DropdownMenuItem asChild>
                         <MarkedToggleButton
-                          markedForRevision={project.Starmark[0]?.isMarked}
+                          markedForRevision={project.starMarks[0]?.isMarked}
                           id={project.id}
                         />
                       </DropdownMenuItem>
